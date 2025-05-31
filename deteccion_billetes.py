@@ -31,7 +31,7 @@ def obtener_componentes_conectados(frame):
     
     for i in range(1, num_labels):  # Ignorar el fondo (etiqueta 0)
         x, y, w, h, area = stats[i]
-        if w > 500 and h > 500:  # Filtrar componentes pequeños
+        if 200 < w < 500 and 200 < h < 500:  # Filtrar componentes por tamaño
             # Extraer subimagen del componente conectado
             subimg = frame[y:y+h, x:x+w]
             subimg = cv2.cvtColor(subimg, cv2.COLOR_BGR2GRAY)
