@@ -4,19 +4,21 @@ import pickle
 import os
 
 # Obtener la ruta absoluta del archivo modelo_billetes.pkl
-ruta_modelo = os.path.join(os.path.dirname(__file__), "modelo_billetes.pkl")
+ruta_modelo = os.path.join(os.path.dirname(__file__), "modelo_completo.pkl")
 
 from skimage.feature import hog
 
-def extraer_caracteristicas(img):
-    img = cv2.resize(img, (128, 128))  # Redimensionar al mismo tamaño que en el entrenamiento
-    hog_features, _ = hog(img, orientations=9, pixels_per_cell=(8, 8),  cells_per_block=(2, 2), visualize=True)
-    return np.array(hog_features).reshape(1, -1)  # Ajustar la forma para la predicción
-
-
 # Cargar el modelo previamente entrenado
 with open(ruta_modelo, "rb") as archivo_modelo:
-    modelo = pickle.load(archivo_modelo)
+    datos = pickle.load(archivo_modelo)
+    modelo = datos["modelo"]
+    scaler = datos["scaler"]  # ✅ scaler también
+
+def extraer_caracteristicas(img):
+    img = cv2.resize(img, (128, 128))
+    hog_features, _ = hog(img, orientations=9, pixels_per_cell=(8, 8),
+                          cells_per_block=(2, 2), visualize=True)
+    return np.array(hog_features).reshape(1, -1)
 
 def obtener_componentes_conectados(frame):
     # Convertir a escala de grises
@@ -35,10 +37,9 @@ def obtener_componentes_conectados(frame):
             # Extraer subimagen del componente conectado
             subimg = frame[y:y+h, x:x+w]
             subimg = cv2.cvtColor(subimg, cv2.COLOR_BGR2GRAY)
-            subimg = cv2.resize(subimg, (90, 90))  # Resize to 90x90 pixels
+            subimg = cv2.resize(subimg, (128, 128)) 
             subimg = extraer_caracteristicas(subimg)
-            
-            # Predecir la etiqueta del billete
+            subimg = scaler.transform(subimg) 
             etiqueta = modelo.predict(subimg)[0]
             
             # Dibujar rectángulo y etiqueta en el cuadro original
