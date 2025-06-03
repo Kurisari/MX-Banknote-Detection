@@ -56,6 +56,7 @@ cap = cv2.VideoCapture(0)
 if not cap.isOpened():
     print("Error: No se pudo abrir la cámara.")
 else:
+    captura_idx = 1  # Para nombrar las capturas
     while True:
         ret, frame = cap.read()
         if not ret:
@@ -65,8 +66,14 @@ else:
         obtener_componentes_conectados(frame)
         cv2.imshow('Video en vivo', frame)
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord('q'):
             break
+        elif key == ord('c'):
+            nombre_archivo = f"captura_{captura_idx}.png"
+            cv2.imwrite(nombre_archivo, frame)
+            print(f"Captura guardada como {nombre_archivo}")
+            captura_idx += 1
 
 cap.release()
 cv2.destroyAllWindows()
