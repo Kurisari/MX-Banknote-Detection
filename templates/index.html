@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Detector de Billetes</title>
+</head>
+<body>
+  <h1>Sube una imagen con billetes mexicanos</h1>
+  <form method="POST" enctype="multipart/form-data">
+    <input type="file" name="imagen" required>
+    <button type="submit">Procesar imagen</button>
+  </form>
+
+  {% if total is defined %}
+    <h2>Total detectado: ${{ total }}</h2>
+    <img src="{{ imagen }}" alt="Resultado" width="700">
+    <p>Etiquetas detectadas: {{ etiquetas }}</p>
+  {% endif %}
+</body>
+</html>
