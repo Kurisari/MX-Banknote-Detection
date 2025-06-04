@@ -34,7 +34,8 @@ def detectar_billetes(imagen_path):
     # Filtrar componentes conectados razonables
     for i in range(1, num_labels):
         x, y, w, h, area = stats[i]
-        if 200 < w < 1000 and 200 < h < 1000:
+        print(f"Componente {i}: w={w}, h={h}, área={area}")
+        if 50 < w < 500 and 30 < h < 300:
             boxes.append((x, y, w, h))
 
     # Eliminar cajas contenidas dentro de otras
